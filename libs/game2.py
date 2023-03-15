@@ -65,7 +65,7 @@ class TicTacToe(arcade.Window):
                     print(self.current_player)
                     self.ganador= self.current_player
                     self.game_over = True
-                    arcade.stop_game()
+                    # arcade.finish_render()
                 else:
                     self.current_player = 3 - self.current_player
 

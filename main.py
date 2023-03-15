@@ -14,10 +14,22 @@ name_two =  sys.argv[3]
 pointOne= 0
 pointTwo= 0
 
+
+
 for i in range(numPart+1):
     game = game2.TicTacToe(300,300,"hi")
     game.run()
     print("ganador main")
     print(game.ganador)
-    
+    if game.ganador == 1:
+        pointOne = pointOne+1
+    else:
+        pointTwo = pointTwo+1
+
+
+if pointOne > pointTwo:
+    print("Gano el jugador uno => %s" % name_one) 
+else:
+    print("Gano el jugador Dos => %s" % name_one) 
+
 
