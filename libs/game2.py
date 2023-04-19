@@ -24,12 +24,115 @@ class TicTacToe(arcade.Window):
         self.board = [[0 for _ in range(3)] for _ in range(3)]
         self.current_player = 1
         self.game_over = False
+        self.ganador = ""
+        self.compMove()
 
     def on_draw(self):
         arcade.start_render()
         self.draw_grid()
         self.draw_markers()
 
+    def check_winBot(self,mark):
+        for i in range(3):
+            if self.board[i][0] == self.board[i][1] == self.board[i][2] == mark:
+                return True
+            if self.board[0][i] == self.board[1][i] == self.board[2][i]  == mark:
+                return True
+        if self.board[0][0] == self.board[1][1] == self.board[2][2]  == mark:
+            return
+        if self.board[0][0] == self.board[1][1] == self.board[2][2]  == mark:
+         return True
+        if self.board[0][2] == self.board[1][1] == self.board[2][0]  == mark:
+         return True
+     
+    def checkDraw(self,board):
+        i = 0
+        for wi in board:
+            j=0
+            for wj in wi:
+                if(board[i][j] == 0):
+                    return False
+            j+=1
+        i+=i
+        return True
+
+
+    def minimax(self,board,depth, isMaximing):
+        # verifica que si el movimiento hay un ganador 2
+        if self.check_winBot(1):
+            return 1
+        # verifica que si el movimiento hay un ganador 1
+        elif  self.check_winBot(2):
+            return -1
+        
+        # verifica que si el movimiento hay un ganador 
+        elif self.checkDraw(board):
+            print("no mani")
+            return 0
+        
+        if isMaximing:
+           bestScore = -800
+           i = 0
+           for key in board:
+               j=0
+               for item in key:
+                   if  board[i][j] == 0:
+                       print("position {}:{} = 0".format(i,j))
+        # coloca paso
+                       board[i][j] = 1
+                       source = self.minimax(board,depth + 1,False)
+                       board[i][j] = 0
+                       if(source > bestScore):
+                           bestScore = source
+                   j+=1
+               i+=i
+           return bestScore
+        else:
+           bestScore =  800
+           i = 0
+           for key in board:
+               j=0
+               for item in key:
+                   if  board[i][j] == 0:
+                       print("position {}:{} = 0".format(i,j))
+        # coloca paso
+                       board[i][j] = 1
+                       print("boardpcc")
+                       print(board)
+                       source = self.minimax(board,depth + 1,True)
+                       board[i][j] = 0
+                       if(source > bestScore):
+                           bestScore = source
+                   j+=1
+               i+=i
+           return bestScore
+    
+    def compMove(self):
+        bestScore = -800
+        bestMoveI = 0
+        bestMoveJ = 0
+        i = 0
+        for key in self.board:
+            j=0
+            for item in key:
+                if self.board[i][j] == 0:
+                    self.board[i][j] = 1
+                    source = self.minimax(self.board,0,False)
+                    print("position {}:{} = 0 and source is = {}".format(i,j,source))
+                    self.board[i][j] = 0
+                    if(source > bestScore):
+                        bestScore = source
+                        bestMoveI = i
+                        bestMoveJ = j
+                j+=1
+            i+=i
+        print("el pc dice que 💻")
+        print("El mejor movimiento es = [{}][{}]".format(bestMoveI,bestMoveJ))
+        self.board[bestMoveI][bestMoveJ] = self.current_player
+        
+
+
+    
     def draw_grid(self):
         for i in range(1, 3):
             # Líneas verticales
@@ -60,6 +163,9 @@ class TicTacToe(arcade.Window):
             j = x // GRID_WIDTH
             if self.board[i][j] == 0:
                 self.board[i][j] = self.current_player
+                print("===========")
+                for item in self.board:
+                    print(item)
                 if self.check_win():
                     print("gano cv")
                     print(self.current_player)
@@ -68,6 +174,7 @@ class TicTacToe(arcade.Window):
                     # arcade.finish_render()
                 else:
                     self.current_player = 3 - self.current_player
+                    self.compMove()
 
     def check_win(self):
         for i in range(3):
